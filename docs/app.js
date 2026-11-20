@@ -258,6 +258,13 @@ async function loadLeaderboard() {
   }
   try {
     const read = new ethers.Contract(CONFIG.payLinkAddress, PAYLINK_ABI, provider);
+    /* Short circuit: with zero payments there are no Payment events to scan,
+       so never call eth_getLogs at all. Public BSC endpoints rate-limit it. */
+    const totalPayments = Number(await read.totalPayments());
+    if (totalPayments === 0) {
+      body.innerHTML = "<tr><td colspan='6'>No payments or sales yet. The leaderboard only shows real on chain activity, nothing is invented.</td></tr>";
+      return;
+    }
     const latest = await provider.getBlockNumber();
     /* Public BSC endpoints rate-limit wide eth_getLogs ranges, so walk the
        range from the deploy block in small chunks and skip failed chunks. */
@@ -313,7 +320,7 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll("nav a").forEach((a) => {
     if (a.getAttribute("href") === location.pathname.split("/").pop()) a.classList.add("active");
   });
@@ -338,7 +345,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (contractsReady()) {
     note("Contracts are live on BNB Smart Chain. Connect your wallet to start.");
   }
-  loadLinks();
-  loadSkills();
-  loadLeaderboard();
+  /* Load the three sections one after another, not all at once: the public
+     RPC batches concurrent calls and rate-limits them. */
+  await loadLinks();
+  await loadSkills();
+  await loadLeaderboard();
 });
