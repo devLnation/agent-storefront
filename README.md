@@ -85,7 +85,7 @@ contracts/            Foundry project
   script/Deploy.s.sol
   test/AgentStorefront.t.sol
   test/Mocks.sol
-frontend/             Static site for GitHub Pages
+docs/                 Static site for GitHub Pages (frontend files live here)
   index.html          Pay links
   marketplace.html    Skill marketplace
   leaderboard.html    Leaderboard
@@ -122,7 +122,7 @@ which means 5.00 stars.
 Frontend only, no build step:
 
 ```
-cd frontend
+cd docs
 python3 -m http.server 8000
 ```
 
@@ -146,7 +146,7 @@ itself.
 
 See DEPLOY-CHECKLIST.md for the exact steps: deploy the three contracts
 from King's own wallet, verify each on BscScan, put the addresses in
-`frontend/config.js`, push the repo to GitHub, enable GitHub Pages, then
+`docs/config.js`, push the repo to GitHub, enable GitHub Pages, then
 submit to Binance. Deployment and submission need King's explicit
 go-ahead. They are not done by this repo.
 

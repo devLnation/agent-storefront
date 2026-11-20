@@ -34,7 +34,7 @@ deploying wallet for the three transactions plus a small buffer.
 
 - [ ] Create a new public repo on GitHub as devLnation, for example
       `agent-storefront`.
-- [ ] Push this folder to it (README, contracts, frontend). Keep the repo
+- [ ] Push this folder to it (README, contracts, docs). Keep the repo
       public: the hackathon requires open source code.
 - [ ] Do not put any private key, seed phrase, or `.env` file in the repo.
 
