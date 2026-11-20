@@ -7,6 +7,7 @@ let account = null;
 let hasAgentId = false;
 
 const ZERO = "0x0000000000000000000000000000000000000000";
+const DEPLOY_BLOCK = 134671598; /* PayLink deployment block, first block that can hold events */
 const $ = (id) => document.getElementById(id);
 const short = (a) => (a ? a.slice(0, 6) + "..." + a.slice(-4) : "");
 const isDeployed = (a) => a && a.toLowerCase() !== ZERO;
@@ -258,8 +259,19 @@ async function loadLeaderboard() {
   try {
     const read = new ethers.Contract(CONFIG.payLinkAddress, PAYLINK_ABI, provider);
     const latest = await provider.getBlockNumber();
-    const fromBlock = Math.max(0, latest - 200000);
-    const payments = await read.queryFilter(read.filters.Payment, fromBlock);
+    /* Public BSC endpoints rate-limit wide eth_getLogs ranges, so walk the
+       range from the deploy block in small chunks and skip failed chunks. */
+    const payments = [];
+    const CHUNK = 5000;
+    for (let from = DEPLOY_BLOCK; from <= latest; from += CHUNK) {
+      const to = Math.min(from + CHUNK - 1, latest);
+      try {
+        const logs = await read.queryFilter(read.filters.Payment, from, to);
+        payments.push(...logs);
+      } catch (e) {
+        /* One chunk failing must not kill the whole table. */
+      }
+    }
     const agents = {};
     for (const ev of payments) {
       const a = ev.args.recipient;
@@ -302,6 +314,9 @@ function escapeHtml(s) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("nav a").forEach((a) => {
+    if (a.getAttribute("href") === location.pathname.split("/").pop()) a.classList.add("active");
+  });
   const btn = $("connectBtn");
   if (btn) btn.addEventListener("click", connect);
   const cf = $("createLinkForm");
