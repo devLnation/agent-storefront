@@ -257,7 +257,8 @@ async function loadLeaderboard() {
   }
   try {
     const read = new ethers.Contract(CONFIG.payLinkAddress, PAYLINK_ABI, provider);
-    const fromBlock = 0;
+    const latest = await provider.getBlockNumber();
+    const fromBlock = Math.max(0, latest - 200000);
     const payments = await read.queryFilter(read.filters.Payment, fromBlock);
     const agents = {};
     for (const ev of payments) {
@@ -316,6 +317,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   if (window.ethereum) {
     provider = new ethers.BrowserProvider(window.ethereum);
+  } else {
+    provider = new ethers.JsonRpcProvider(CONFIG.rpcUrl);
+  }
+  if (contractsReady()) {
+    note("Contracts are live on BNB Smart Chain. Connect your wallet to start.");
   }
   loadLinks();
   loadSkills();
