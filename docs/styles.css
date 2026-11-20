@@ -1,0 +1,15 @@
+body { font-family: system-ui, -apple-system, sans-serif; max-width: 860px; margin: 0 auto; padding: 16px; color: #111; background: #fff; line-height: 1.5; }
+nav a { margin-right: 14px; }
+h1 { font-size: 28px; }
+h2 { margin-top: 28px; }
+.card { border: 1px solid #ccc; border-radius: 8px; padding: 12px; margin: 10px 0; }
+form { border: 1px solid #ccc; border-radius: 8px; padding: 12px; margin: 10px 0; }
+label { display: block; margin: 8px 0; }
+input, select, textarea { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
+button { padding: 10px 16px; margin: 6px 4px 6px 0; cursor: pointer; }
+.status { padding: 10px; background: #eef6ff; border: 1px solid #99c; border-radius: 8px; }
+.status.bad { background: #fff0f0; border-color: #c99; }
+.warn { padding: 10px; background: #fff8e1; border: 1px solid #cc9; border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+small { color: #555; }
